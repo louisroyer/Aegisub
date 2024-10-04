@@ -424,6 +424,19 @@ subdir('packages')
 subdir('po')
 subdir('src')
 
+if get_option('bash_completion')
+  bash_comp = dependency('bash_completion', required: false)
+  if bash_comp.found()
+    bash_install_dir = bash_comp.get_variable(
+      pkgconfig: 'completionsdir',
+      pkgconfig_define: ['datadir', datadir]
+    )
+  else
+    bash_install_dir = join_paths(datadir, 'bash-completion', 'completions')
+  endif
+  install_data('tools/bash-completion.sh', install_dir: bash_install_dir, rename: 'aegisub')
+endif
+
 if not meson.is_cross_build()
     subdir('tests')
 endif
